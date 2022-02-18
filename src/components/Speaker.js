@@ -1,3 +1,5 @@
+import react, { useState } from 'react';
+
 function Session({ title, room }) {
   return (
     <span className="session w-100">
@@ -28,15 +30,27 @@ function SpeakerImage({ id, first, last }) {
 }
 
 function SpeakerFavorite({favorite, onFavoriteToggle}){
+  const [ inTransition, setInTransition] = useState(false); //local state that is for spinning circle while data is updating ( favorite value)
+
+  function doneCallback(){
+    setInTransition(false); // when callback function is done ( data is updated) then circle disappears
+    console.log(`It\'s called!  ${new Date().getMilliseconds()}`);
+  }
   return (
     <div className="action paB1">
       <span 
-      onClick={onFavoriteToggle}>
+      onClick={function (){
+        setInTransition(true) //when user clicks on favorite, then spinning circle appears
+        return onFavoriteToggle(doneCallback)
+      }}>
         <i className={
           favorite === true ?
           "fa fa-star orange" : "fa fa-star-o orange"
         }/>{" "}
         Favorite{" "}
+        {inTransition ? (
+          <span className='fas fa-circle-notch fa-spin'></span>
+        ) : null}
       </span>
     </div>
   )
